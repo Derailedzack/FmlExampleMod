@@ -10,6 +10,7 @@ import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -23,13 +24,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-
+import javax.swing.JOptionPane;
+import javax.swing.*;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = ExampleMod.MODID, name = ExampleMod.NAME, version = ExampleMod.VERSION)
@@ -37,14 +41,16 @@ import org.apache.logging.log4j.Logger;
 public class ExampleMod
 {
 	public static Configuration con = new Configuration(new File("config/FMLtest.cfg"));
-	public static Property Path = con.get("Sound", "WavePath","G:\\FamiTracker-v0.4.6\\Demo\\Thunderforce.wav", "Path To the Wave File To Play");
-	 public static   Property Loops = con.get("Sound", "Loops", "-1", "How Many Times Does The Wave Loop");
+	public static Property Path = con.get("Sound", "WavePath","", "Path To the Wave File To Play");
+	 public static   Property Loops = con.get("Sound", "Loops", "", "How Many Times Does The Wave Loop");
     public static final String MODID = "examplemod";
     public static final String NAME = "Example Mod";
     public static final String VERSION = "1.0";
 private static  Clip wave;
     private static Logger logger;
    //private static String  path = "G:\\FamiTracker-v0.4.6\\Demo\\Thunderforce.wav";
+	private FMLCommonHandler fmlch;
+	
    
     @EventHandler
     public void preInit(net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent event)
@@ -85,13 +91,18 @@ private static  Clip wave;
 			wave.loop(Loops.getInt());
 		} catch (LineUnavailableException e) {
 			// TODO Auto-generated catch block
-			net.minecraft.client.Minecraft.getMinecraft().displayCrashReport(CrashReport.makeCrashReport(e, e.getLocalizedMessage()));
+			org.DisplayErrorMessage.DisplayErrorMessage(e,4, 25);
+			fmlch.exitJava(-1, false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			net.minecraft.client.Minecraft.getMinecraft().displayCrashReport(CrashReport.makeCrashReport(e, e.getLocalizedMessage()));
+		org.DisplayErrorMessage.DisplayErrorMessage(e, 4, 25);
+		fmlch.exitJava(-1, false);
 		} catch (UnsupportedAudioFileException e) {
 			// TODO Auto-generated catch block
-			net.minecraft.client.Minecraft.getMinecraft().displayCrashReport(CrashReport.makeCrashReport(e, e.getLocalizedMessage()));
+			org.DisplayErrorMessage.DisplayErrorMessage(e, 4, 25);
+			 fmlch.exitJava(-1, false);
+			 
+			 
 		}
     		//event.registerServerCommand(new CommandTest());
     		//logger.debug("test -1");
@@ -113,4 +124,3 @@ private static  Clip wave;
     }
    
 }
-
